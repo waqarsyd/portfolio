@@ -1,0 +1,1937 @@
+/* ==========================================================================
+   Waqar Sayyed — portfolio
+   One stylesheet, no build step, no framework.
+
+   SOURCE ORDER IS LOAD-BEARING. `.dark-mode a { color: #fff }` in the contact
+   block is what turns the header links white, and it only wins because it
+   comes after the header block. Do not reorder these sections.
+
+   Two things that look like bugs and are not: headings are `font-weight: 400`,
+   and only one weight of Montserrat is loaded, so bold text is synthesised by
+   the browser. Adding a real 700 face would change the page's whole texture.
+
+   Blocks marked LOCAL are sections with no shared card or heading vocabulary
+   to build on, styled from the classes the rest of the page already uses.
+
+   Structure:
+      1. Fonts and base
+      2. Root / dark mode
+      3. Header
+      4. Toggle switch
+      5. Splash screen
+      6. Greeting
+      7. Button
+      8. Social media
+      9. Skills + software skills
+     10. Proficiency
+     11. Education
+     12. Work experience
+     13. Projects
+     14. (unused — slot kept so the numbering below still lines up)
+     15. Contact
+     16. Footer, top button
+     17. (unused)
+     18. Dark mode overrides
+     19. LOCAL additions
+     20. Reveal / motion
+   ========================================================================== */
+
+/* -------------------------------------------------- 1. fonts and base
+   Fonts are copied into fonts/ so the page still works with no network. */
+@font-face {
+  font-family: 'Agustina Regular';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Agustina Regular'), url('fonts/Agustina.woff') format('woff');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  src: local('Montserrat'), url('fonts/Montserrat-Regular.ttf') format('woff');
+  font-display: swap;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+html,
+body {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font: 19px / 23px Montserrat, 'Montserrat', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@media (max-width: 1380px) {
+  html,
+  body {
+    line-height: normal;
+  }
+}
+
+/* Minimal reset — this page builds its lists by hand and picks up the default
+   UA margins. */
+img,
+svg {
+  max-width: 100%;
+}
+
+button {
+  font: inherit;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 200;
+  background: #55198b;
+  color: #ffffff;
+  padding: 12px 20px;
+  font-weight: 700;
+}
+
+.skip-link:focus {
+  left: 0;
+}
+
+.noscript-note {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 64px 24px;
+}
+
+/* ------------------------------------------------ 2. root and dark mode */
+.subTitle {
+  color: #868e96;
+}
+
+.dark-mode {
+  background-color: #171c28;
+  color: white;
+  transition: '0.1s';
+}
+
+/* Every section body is one of these two wrappers. There is no max-width and
+   no centred shell — the content is 90% of the viewport. */
+.main {
+  width: 90%;
+  padding: 20px 10px;
+  margin: 0px auto;
+  margin-top: 4rem;
+}
+
+.greet-main {
+  width: 90%;
+  padding: 20px 10px;
+  margin: 0px auto;
+  margin-top: 2rem;
+}
+
+/* ------------------------------------------------------------ 3. header */
+
+/* React-headroom. The wrapper is clipped to 100px even though the header is
+   taller, which is why the greeting starts 100px down rather than 139px. */
+.headroom-wrapper {
+  max-height: 100px;
+}
+
+.headroom {
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  transform: translate3D(0, 0, 0);
+}
+
+.headroom--unfixed {
+  position: relative;
+}
+
+.headroom--pinned,
+.headroom--unpinned {
+  position: fixed;
+}
+
+.headroom--unpinned {
+  transform: translate3D(0, -100%, 0);
+}
+
+.headroom--scrolled {
+  transition: all 0.2s ease-in-out;
+}
+
+.header {
+  background-color: #fff;
+  max-width: 100%;
+  padding: 15px 20px;
+  margin: 0px auto;
+}
+
+.header ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow: hidden;
+}
+
+.grey-color {
+  color: #868e96;
+}
+
+.header li a {
+  display: block;
+  padding: 15px 20px;
+  color: #000000;
+  text-decoration: none;
+}
+
+.header li a:hover,
+.header .menu-btn:hover {
+  background-color: #f4f4f4;
+}
+
+.header .logo {
+  display: block;
+  flex: none;
+  float: left;
+  font-size: 1.5em;
+  text-decoration: none;
+  margin-top: 10px;
+  line-height: normal;
+}
+
+.header .logo-name {
+  font-family: 'Agustina Regular';
+  font-weight: bold;
+  font-variant-ligatures: no-common-ligatures;
+  -webkit-font-variant-ligatures: no-common-ligatures;
+  padding: 0 10px;
+}
+
+/* menu */
+.header .menu {
+  clear: both;
+  max-height: 0;
+  transition: max-height 0.2s ease-out;
+}
+
+/* menu icon */
+.header .menu-icon {
+  cursor: pointer;
+  display: inline-block;
+  float: right;
+  padding: 28px 20px;
+  position: relative;
+  user-select: none;
+}
+
+.header .menu-icon .navicon {
+  background: #333;
+  display: block;
+  height: 2px;
+  position: relative;
+  transition: background 0.2s ease-out;
+  width: 18px;
+}
+
+.header .menu-icon .navicon:before,
+.header .menu-icon .navicon:after {
+  background: #333;
+  content: '';
+  display: block;
+  height: 100%;
+  position: absolute;
+  transition: all 0.2s ease-out;
+  width: 100%;
+}
+
+.header .menu-icon .navicon:before {
+  top: 5px;
+}
+
+.header .menu-icon .navicon:after {
+  top: -5px;
+}
+
+/* menu btn */
+.header .menu-btn {
+  display: none;
+}
+
+.header .menu-btn:checked ~ .menu {
+  max-height: 486px;
+}
+
+.header .menu-btn:checked ~ .menu-icon .navicon {
+  background: transparent !important;
+}
+
+.header .menu-btn:checked ~ .menu-icon .navicon:before {
+  transform: rotate(-45deg);
+}
+
+.header .menu-btn:checked ~ .menu-icon .navicon:after {
+  transform: rotate(45deg);
+}
+
+.header .menu-btn:checked ~ .menu-icon:not(.steps) .navicon:before,
+.header .menu-btn:checked ~ .menu-icon:not(.steps) .navicon:after {
+  top: 0;
+}
+
+/* 48em = 768px */
+@media (min-width: 48em) {
+  .header li {
+    float: left;
+  }
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .header .menu {
+    max-height: none;
+  }
+  .header .menu-icon {
+    display: none;
+  }
+}
+
+@media (max-width: 960px) and (min-width: 768px) {
+  .header {
+    font-size: 12px;
+  }
+}
+
+/* ----------------------------------------------------- 4. toggle switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 26px;
+}
+
+.switch input {
+  transform: scale(0.5);
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.slider::before {
+  position: absolute;
+  content: '';
+  height: 26px;
+  width: 28px;
+  left: 0;
+  bottom: 0;
+  background-color: #ffffff;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.switch input:checked + .slider {
+  background-color: #2196f3;
+}
+
+.switch input:focus + .slider {
+  box-shadow: #2196f3;
+}
+
+.switch input:checked + .slider::before,
+.switch input:checked + .slider > .emoji {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+  display: flex;
+  align-items: center;
+}
+
+.slider.round::before {
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+}
+
+.emoji {
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  margin-left: 2px;
+}
+
+/* ------------------------------------------------------ 5. splash screen */
+.splash-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.splash-animation-container {
+  height: 50vh;
+}
+
+.splash-title-container {
+  font-size: 2.5rem;
+  text-decoration: none;
+}
+
+.splash-title {
+  font-family: 'Agustina Regular', cursive;
+  font-weight: bold;
+  font-variant-ligatures: no-common-ligatures;
+  -webkit-font-variant-ligatures: no-common-ligatures;
+  padding: 0 20px;
+}
+
+/* ---------------------------------------------------------- 6. greeting */
+.greeting-main {
+  display: flex;
+}
+
+.greeting-main > * {
+  flex: 1;
+  margin-bottom: 30px;
+}
+
+.empty-div {
+  margin-bottom: 40px;
+}
+
+.button-greeting-div {
+  display: flex;
+  margin-top: 40px;
+}
+
+.download-link-button {
+  text-decoration: none;
+}
+
+.greeting-text {
+  font-size: 70px;
+  line-height: 1.1;
+  color: #000000 !important;
+  margin: 0.67em 0;
+}
+
+.greeting-text-p {
+  font-size: 30px;
+  line-height: 40px;
+}
+
+.greeting-image-div > img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Holds the name and the wave on the same line — see buildGreeting(). */
+.nowrap {
+  white-space: nowrap;
+}
+
+.wave-emoji {
+  animation-duration: 1.8s;
+  animation-iteration-count: infinite;
+  animation-name: wave;
+  display: inline-block;
+  transform-origin: 70% 70%;
+}
+
+@keyframes wave {
+  0% {
+    transform: rotate(0deg);
+  }
+  10% {
+    transform: rotate(-10deg);
+  }
+  20% {
+    transform: rotate(12deg);
+  }
+  30% {
+    transform: rotate(-10deg);
+  }
+  40% {
+    transform: rotate(9deg);
+  }
+  50% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@media (max-width: 1380px) {
+  .greeting-text {
+    font-size: 50px;
+  }
+  .greeting-text-p {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .button-greeting-div {
+    justify-content: space-around;
+  }
+  .greeting-text {
+    font-size: 30px;
+    text-align: center;
+  }
+  .greeting-text-p {
+    font-size: 16px;
+    line-height: normal;
+    text-align: center;
+  }
+  .greeting-main {
+    display: block;
+  }
+  .greeting-image-div {
+    height: 256px;
+  }
+}
+
+@media (max-width: 320px) {
+  .main {
+    width: auto;
+  }
+}
+
+/* ------------------------------------------------------------ 7. button */
+.main-button {
+  background-color: #55198b;
+  border: solid 1px #55198b;
+  color: #ffffff;
+  font-weight: 700;
+  width: max-content;
+  padding: 13px 22px;
+  margin-right: 50px;
+  text-transform: uppercase;
+  border-radius: 6px;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+  margin-top: 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out 0s;
+}
+
+.main-button:hover {
+  background-color: #ffffff;
+  color: #55198b;
+  transition: all 0.3s ease 0s;
+  transform: translateY(-3px);
+}
+
+/* Button.scss's `.project-button` is not ported — it centres the "More
+   projects" call to action under the project grid, and this site has no such
+   button. Removed 2026-08-23 along with its `> .main-button` override. */
+
+@media (max-width: 768px) {
+  .main-button {
+    font-size: 0.938rem;
+    padding: 12px 18px;
+    margin-right: 0px;
+  }
+}
+
+@media (max-width: 320px) {
+  .main-button {
+    font-size: 0.75rem;
+  }
+}
+
+/* ------------------------------------------------------ 8. social media */
+.social-media-div {
+  font-size: 2em;
+}
+
+.icon-button {
+  margin-bottom: 10px;
+}
+
+.icon-button i {
+  color: #ffffff;
+  border-radius: 2.6rem;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 1.3rem;
+  height: 2.6rem;
+  line-height: 2.6rem;
+  margin: 0 5px;
+  position: relative;
+  text-align: center;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  width: 2.6rem;
+  margin-bottom: 10px;
+  transition: 0.2s ease-in;
+}
+
+.github i {
+  background-color: #333;
+}
+
+.linkedin i {
+  background-color: #0e76a8;
+}
+
+.google i {
+  background-color: #ea4335;
+}
+
+.gitlab i {
+  background-color: #fca326;
+}
+
+.facebook i {
+  background-color: #3b5998;
+}
+
+.twitter i {
+  background-color: #1da1f2;
+}
+
+.medium i {
+  background-color: #000;
+}
+
+.stack-overflow i {
+  background-color: #f48024;
+}
+
+.instagram i {
+  background-color: #c13584;
+}
+
+.kaggle i {
+  background-color: #20beff;
+}
+
+/* Hover Transition */
+.twitter i:hover,
+.google i:hover,
+.gitlab i:hover,
+.github i:hover,
+.linkedin i:hover,
+.facebook i:hover,
+.instagram i:hover,
+.stack-overflow i:hover,
+.kaggle i:hover,
+.medium i:hover {
+  background-color: #000000;
+}
+
+@media (max-width: 768px) {
+  .social-media-div {
+    text-align: center;
+  }
+}
+
+/* ------------------------------------------- 9. skills / software skills */
+.skills-main-div {
+  display: flex;
+  width: 100%;
+  overflow: hidden;
+}
+
+.skills-text-div {
+  margin-left: 50px;
+}
+
+.skills-main-div > * {
+  flex: 1;
+  margin-bottom: 30px;
+}
+
+.skills-image-div > img {
+  max-width: 100%;
+  height: auto;
+}
+
+.skills-heading {
+  font-size: 56px;
+  font-weight: 400;
+  margin: 0.67em 0;
+}
+
+.dev-icons {
+  padding-left: 0;
+  list-style: none;
+  font-size: 3rem;
+  margin-bottom: 0px;
+  margin-top: 0px;
+  text-align: center;
+}
+
+.software-skill-inline {
+  display: inline-block;
+  margin-right: 20px;
+  margin-bottom: 20px;
+}
+
+/* LOCAL — the whole tile is the hover target, not just the glyph, so the label
+   is hoverable too. `--brand` is written on the <li> by render.js; tiles that
+   name no product set none and fall back to the indigo in each var().
+
+   `transform` rather than width/font-size so the tile's layout box never
+   changes: the grid wraps on pixel widths, and resizing the box would reflow
+   the rows under the cursor. */
+.software-skill-inline > i {
+  color: #868e96;
+  display: inline-block;
+  transition: color 200ms ease,
+    transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    filter 260ms ease;
+}
+
+.software-skill-inline:hover > i,
+.software-skill-inline:focus-within > i {
+  color: var(--brand, #645beb);
+  transform: translateY(-6px) scale(1.18);
+  filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.18));
+}
+
+.software-skill-inline > p {
+  color: #868e96;
+  font-size: 10px;
+  transition: color 200ms ease;
+}
+
+.software-skill-inline:hover > p,
+.software-skill-inline:focus-within > p {
+  color: var(--brand, #645beb);
+}
+
+@media (max-width: 1380px) {
+  .skills-heading {
+    font-size: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .skills-heading {
+    font-size: 30px;
+    text-align: center;
+  }
+  .greeting-text-p {
+    font-size: 16px;
+    line-height: normal;
+  }
+  .skills-main-div {
+    flex-direction: column;
+  }
+  .skills-text-div {
+    margin-left: 0px;
+    margin: 20px;
+  }
+  .skills-text {
+    font-size: 16px;
+  }
+  .skills-text-subtitle {
+    font-size: 16px;
+    text-align: center;
+  }
+  .skills-image-div {
+    order: 2;
+  }
+}
+
+/* ------------------------------------------ 10. proficiency / the stack */
+.meter {
+  height: 20px;
+  position: relative;
+  background: rgb(243, 239, 239);
+  -moz-border-radius: 25px;
+  -webkit-border-radius: 25px;
+  border-radius: 25px;
+}
+
+.meter > span {
+  display: block;
+  height: 100%;
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+  background-color: #aaa5ff;
+  position: relative;
+  overflow: hidden;
+}
+
+.skill {
+  line-height: 3.5vw;
+}
+
+/* There is deliberately no `.skill-bars` rule: the element rendered here is
+   `skills-bar`, singular, so the bars run full width. */
+
+.skills-container {
+  display: flex;
+  width: 90%;
+  padding: 20px 10px;
+  margin: 0px auto;
+  margin-top: 2rem;
+}
+
+.skills-container > * {
+  flex: 1;
+  margin-bottom: 30px;
+}
+
+.skills-image > img {
+  margin-left: 80px;
+  max-width: 90%;
+  height: auto;
+}
+
+@media (max-width: 1456px) {
+  .skills-bar {
+    line-height: 4rem;
+  }
+  .skills-image {
+    display: none;
+    order: 2;
+  }
+}
+
+@media (max-width: 768px) {
+  .skills-container {
+    flex-direction: column;
+  }
+  .skills-bar {
+    line-height: 3rem;
+    margin: 20px;
+  }
+  .skills-image {
+    display: none;
+    order: 2;
+  }
+}
+
+/* --------------------------------------------------------- 11. education */
+.education-heading {
+  font-size: 56px;
+  font-weight: 400;
+}
+
+.education-section {
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  padding: 20px 0px;
+  margin: 0px auto;
+  margin-top: 2rem;
+}
+
+.education-section > * {
+  flex: 1;
+  margin-bottom: 30px;
+}
+
+.education-card-container {
+  display: flex;
+  flex-direction: column;
+  padding-top: 20px;
+}
+
+.education-card {
+  display: flex;
+  flex-direction: row;
+}
+
+.education-card:hover + .education-card-border {
+  border-color: #a9a7f9;
+  width: 100%;
+  -webkit-transition: width 0.6s ease-in-out;
+  -moz-transition: width 0.6s ease-in-out;
+  -o-transition: width 0.6s ease-in-out;
+  transition: width 0.6s ease-in-out;
+}
+
+.education-card-border {
+  height: 30px;
+  width: 80%;
+  border-top: 2px solid rgba(211, 211, 211, 0.397);
+  margin-bottom: 20px;
+  -webkit-transition: width 0.6s ease-in-out;
+  -moz-transition: width 0.6s ease-in-out;
+  -o-transition: width 0.6s ease-in-out;
+  transition: width 0.6s ease-in-out;
+}
+
+.education-text-school {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  height: 27px;
+}
+
+.education-card-right {
+  max-width: 70%;
+}
+
+.education-text-subHeader {
+  color: #000000;
+  font-weight: 700;
+  font-size: 19px;
+  margin: 0px;
+  padding-top: 0.8rem;
+  line-height: normal;
+}
+
+.education-text-duration {
+  color: #000000;
+  font-size: 19px;
+  margin: 0px;
+  padding-top: 0.5rem;
+}
+
+.education-text-bullets > ul {
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 1380px) {
+  .education-card-container {
+    padding-top: 0px;
+  }
+  .education-heading {
+    font-size: 40px;
+  }
+  .education-card {
+    flex-direction: column;
+    padding-bottom: 10px;
+  }
+  .education-card-right {
+    max-width: 90%;
+  }
+  .education-card-border {
+    width: 90%;
+  }
+  .education-text-subHeader {
+    padding-top: 0.5rem;
+    font-size: 16px;
+  }
+  .education-text-school {
+    font-size: 20px;
+    height: 23px;
+  }
+  .education-text-duration {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .education-heading {
+    font-size: 30px;
+    text-align: center;
+  }
+  .education-card {
+    text-align: center;
+  }
+  .education-card-right {
+    max-width: 100%;
+  }
+  .education-card-border {
+    width: 100%;
+  }
+  .education-text-bullets > ul {
+    max-width: 80%;
+    margin: auto;
+  }
+}
+
+/* --------------------------------------------------- 12. work experience */
+.experience-cards-div {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 1rem 1rem;
+}
+
+.experience-heading {
+  font-size: 56px;
+  font-weight: 400;
+  margin: 0.67em 0;
+}
+
+.experience-container {
+  display: flex;
+  width: 90%;
+  padding: 20px 10px;
+  margin: 0px auto;
+  margin-top: 2rem;
+}
+
+.experience-container > * {
+  flex: 1;
+}
+
+.experience-card {
+  position: relative;
+  background-color: rgb(255, 255, 255);
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 10px 30px -15px;
+  border-radius: 10px;
+  border: 1px solid rgba(211, 211, 211, 0.397);
+}
+
+.experience-card:hover {
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 20px 30px -10px;
+}
+
+.experience-banner {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 150%;
+  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.5));
+  border-radius: 10px 10px 0px 0px;
+  filter: blur(0px);
+  height: 11rem;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.experience-blurred_div {
+  position: absolute;
+  background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.2));
+  filter: blur(5px);
+  height: 11rem;
+  top: 0;
+  left: 0;
+  width: 100%;
+  border-radius: 10px 10px 0px 0px;
+}
+
+.experience-div-company {
+  position: absolute;
+  background: transparent;
+  height: 9rem;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.experience-text-company {
+  text-align: center;
+  padding: 1.5rem;
+  margin: 0;
+  color: #fff;
+  font-size: 25px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* A monogram in place of a company logo — no logo assets ship with this site,
+   and licensing third-party marks is not on the table. */
+.experience-roundedimg {
+  position: absolute;
+  object-fit: cover;
+  left: 0;
+  right: 0;
+  top: 7rem;
+  margin-left: auto;
+  margin-right: auto;
+  width: 8rem;
+  height: 8rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 42px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #55198b;
+}
+
+.experience-text-role {
+  text-align: center;
+  color: #000000;
+  font-weight: 700;
+  font-size: 25px;
+  margin: 0px;
+  padding-top: 1.5rem;
+  line-height: normal;
+}
+
+.experience-text-date {
+  text-align: center;
+  color: #000000;
+  font-size: 20px;
+  margin: 0px;
+  padding-top: 1rem;
+  font-weight: 600;
+}
+
+.experience-text-desc {
+  text-align: center;
+}
+
+.experience-text-details {
+  padding: 1.5rem;
+  margin-top: 2rem;
+}
+
+.experience-text-details ul {
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 1380px) {
+  .experience-heading {
+    font-size: 40px;
+  }
+  .experience-text-role {
+    padding-top: 0.5rem;
+    font-size: 22px;
+  }
+  .experience-text-company {
+    font-size: 22px;
+  }
+  .experience-text-date {
+    font-size: 18px;
+  }
+  .experience-roundedimg {
+    width: 6.5rem;
+    height: 6.5rem;
+    font-size: 34px;
+  }
+}
+
+@media (max-width: 768px) {
+  .experience-heading {
+    font-size: 30px;
+    text-align: center;
+  }
+  .experience-text-role {
+    font-size: 22px;
+  }
+  .experience-text-company {
+    font-size: 22px;
+  }
+  .experience-text-date {
+    font-size: 18px;
+  }
+  .experience-text-desc {
+    font-size: 16px;
+  }
+}
+
+/* ---------------------------------------------------------- 13. projects */
+/* There are deliberately no pinned-repo rules here: nothing builds those cards.
+
+   These two sizes are 1.375rem / 1.063rem rather than 22px / 17px. 1.063rem is
+   17.008px, and that hundredth of a pixel is intentional — do not round them. */
+.card-title {
+  color: #000000;
+  font-size: 1.375rem;
+  line-height: 24px;
+  font-weight: 700;
+  margin: 15px 0 0 0;
+}
+
+.card-subtitle {
+  color: #666666;
+  font-size: 1.063rem;
+  line-height: 1.5rem;
+}
+
+.project-card {
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(255, 255, 255);
+  padding: 1.5rem;
+  border-radius: 10px;
+  border: 1px solid rgba(211, 211, 211, 0.397);
+  justify-content: center;
+}
+
+.project-card-light {
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 10px 30px -15px;
+  -webkit-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+
+.project-detail {
+  text-align: center;
+}
+
+.project-card-light:hover {
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 20px 30px -10px;
+}
+
+.projects-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem 1rem;
+}
+
+/* No rule for `.project-card-footer` itself, deliberately: the tags stay
+   inline-flex in a plain block so they wrap like text and inherit
+   `text-align: center`. Giving this div `display: flex` blockifies them and
+   they stop centring with their card. */
+
+.project-card-footer span.project-tag {
+  background: #55198b;
+  color: #f5f2f4;
+  vertical-align: middle;
+  align-items: center;
+  border-radius: 4px;
+  display: inline-flex;
+  font-size: 0.75rem;
+  height: 2em;
+  justify-content: center;
+  white-space: nowrap;
+  line-height: 1.5;
+  margin: 0 0.5rem 0.5rem 0;
+  padding: 0 0.75em;
+  cursor: pointer;
+  transition: 0.2s ease-in;
+}
+
+.project-card-footer span.project-tag:hover {
+  background: #8c43ce;
+}
+
+@media (max-width: 768px) {
+  .project-subtitle {
+    font-size: 16px;
+    text-align: center;
+  }
+}
+
+/* 14. unused — numbering left in place so the index at the top of this file
+   still lines up. */
+
+/* ----------------------------------------------------------- 15. contact */
+.contact-div-main {
+  display: flex;
+}
+
+.contact-div-main > * {
+  flex: 1;
+}
+
+.contact-title {
+  font-size: 65px;
+  font-weight: 400;
+  margin: 0.67em 0;
+}
+
+.contact-detail,
+.contact-detail-email {
+  margin-top: 20px;
+  font-size: 40px;
+  font-weight: 400;
+  color: #868e96;
+  text-decoration: none;
+}
+
+.contact-detail:hover,
+.contact-detail-email:hover {
+  color: #000000;
+  text-shadow: 2px 1px 2px #b5b5b5;
+  transition: all 0.3s;
+}
+
+.contact-subtitle {
+  text-transform: uppercase;
+}
+
+.contact-text-div {
+  margin-top: 1.5rem;
+}
+
+.contact-margin-top {
+  margin-top: 4rem;
+}
+
+.contact-image-div > img {
+  max-width: 100%;
+  height: auto;
+  margin-left: 1.5rem;
+  margin-top: -4rem;
+}
+
+/* GithubProfileCard.scss — reused by the Big Picture section. Its `.prof-title`
+   is not ported: About Me heads itself with `.education-heading` like every
+   other section, so nothing emits that class. */
+.row {
+  display: flex;
+}
+
+.main-content-profile {
+  flex: 80%;
+}
+
+.image-content-profile {
+  text-align: right;
+  flex: 20%;
+  max-width: 100%;
+  height: auto;
+}
+
+.bio-text {
+  line-height: 30px;
+  font-size: 22px;
+}
+
+.desc-prof {
+  line-height: 45px;
+  font-size: 19px;
+}
+
+.opp-div {
+  padding-bottom: 1rem;
+}
+
+@media (max-width: 1380px), (max-width: 768px) {
+  .contact-title {
+    font-size: 40px;
+    text-align: center;
+  }
+  .contact-subtitle {
+    font-size: 16px;
+    line-height: normal;
+    text-align: center;
+  }
+  .contact-text-div {
+    text-align: center;
+    margin-top: 1.5rem;
+  }
+  .contact-detail,
+  .contact-detail-email {
+    font-size: 20px;
+  }
+  .contact-image-div {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .row {
+    display: flex;
+    flex-direction: column;
+  }
+  .main-content-profile {
+    text-align: center;
+    order: 2;
+  }
+  .bio-text {
+    font-size: 16px;
+  }
+  .image-content-profile {
+    margin-left: auto;
+    margin-right: auto;
+    order: 1;
+  }
+  .desc-prof {
+    line-height: 30px;
+    font-size: 16px;
+  }
+}
+
+/* ------------------------------------------------ 16. footer, top button */
+.footer-text {
+  text-align: center;
+  color: #868e96 !important;
+}
+
+.footer-div {
+  margin-top: 2rem;
+  padding-bottom: 1rem;
+}
+
+#topButton {
+  visibility: hidden;
+  position: fixed;
+  bottom: 20px;
+  right: 30px;
+  z-index: 99;
+  border: none;
+  outline: none;
+  background-color: #55198b;
+  color: white;
+  cursor: pointer;
+  padding: 15px;
+  border-radius: 15px;
+  font-size: 25px;
+}
+
+#topButton:hover {
+  background-color: #000;
+  transition: all ease-in-out 0.2s;
+}
+
+/* Section 17, the loading spinner, is not ported: nothing here is lazy or
+   fetched, so there is no moment at which it could appear. */
+
+/* ------------------------------------------------- 18. dark mode overrides
+   Written as descendants of the one root `.dark-mode` rather than per-element,
+   because nothing re-renders here. */
+.dark-mode a {
+  color: #ffffff;
+}
+
+.dark-mode .header {
+  background-color: #171c28 !important;
+  color: #ffffff;
+}
+
+.dark-mode .header li a {
+  color: #ffffff !important;
+}
+
+.dark-mode .header li a:hover {
+  background-color: #55198b !important;
+}
+
+.dark-mode .header .menu-icon .navicon,
+.dark-mode .header .menu-icon .navicon:before,
+.dark-mode .header .menu-icon .navicon:after {
+  background: #ffffff !important;
+}
+
+.dark-mode .greeting-text {
+  color: #ffffff !important;
+}
+
+.dark-mode .greeting-text-p,
+.dark-mode .skills-heading,
+.dark-mode .skills-text-subtitle,
+.dark-mode .skills-text,
+.dark-mode .education-heading,
+.dark-mode .education-text-school,
+.dark-mode .education-text-subHeader,
+.dark-mode .education-text-duration,
+.dark-mode .experience-heading,
+.dark-mode .experience-text-role,
+.dark-mode .experience-text-date,
+.dark-mode .experience-text-desc,
+.dark-mode .experience-text-details .subTitle,
+.dark-mode .card-title,
+.dark-mode .card-subtitle,
+.dark-mode .project-subtitle,
+.dark-mode .contact-title,
+.dark-mode .contact-subtitle,
+.dark-mode .contact-text-div,
+.dark-mode .footer-text,
+.dark-mode .fact-label {
+  color: #ffffff !important;
+}
+
+.dark-mode .experience-card {
+  background-color: #171c28;
+}
+
+.dark-mode .project-card {
+  background-color: #171c28;
+}
+
+.dark-mode .experience-roundedimg {
+  background-color: #ffffff;
+}
+
+.dark-mode .contact-form-field input,
+.dark-mode .contact-form-field textarea {
+  background-color: #171c28;
+  color: #ffffff;
+  border-color: rgba(211, 211, 211, 0.397);
+}
+
+/* ---------------------------------------------------- 19. LOCAL additions
+   Everything here is assembled out of the classes above — the same purple, the
+   same card, the same 4px tag — so nothing introduces a second visual
+   language. */
+
+/* The illustration sits in the narrow column of the About Me row, and is capped
+   to the same 350px that card caps its image to. */
+.image-content-profile .art {
+  max-width: 350px;
+  margin-left: auto;
+}
+
+/* Same cap for a Lottie in this slot — the stage is a bare <div> and cannot be
+   reached through `.art`. WIDTH ONLY: setting a height or aspect-ratio here
+   would break the sizing described below. */
+.image-content-profile > div {
+  max-width: 350px;
+  margin-left: auto;
+}
+
+/* A project's `status` ("In progress"), beside its title. Was `.core-tag`, back
+   when it also marked stack groups as Core; both that marking and the stack
+   section are gone, so the class now carries its one real job in its name. */
+.status-tag {
+  background: #aaa5ff;
+  color: #000000;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.7rem;
+  height: 1.8em;
+  padding: 0 0.6em;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Big Picture — the GithubProfileCard row, with the site's own copy in it. */
+.capability-bullets {
+  margin-top: 0.5rem;
+  padding-left: 1.2rem;
+}
+
+.capability-bullets li {
+  margin-bottom: 0.5rem;
+}
+
+.capability-bullets strong {
+  color: #55198b;
+}
+
+.dark-mode .capability-bullets strong {
+  color: #aaa5ff;
+}
+
+.fact-label {
+  color: #000000;
+  font-weight: 700;
+}
+
+/* Project detail — problem / approach / outcome, styled as a card subtitle
+   with a small purple label above each. */
+.project-body {
+  margin: 1rem 0 0;
+  text-align: left;
+}
+
+.project-body dt {
+  margin-top: 0.75rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #55198b;
+}
+
+.dark-mode .project-body dt {
+  color: #aaa5ff;
+}
+
+.project-body dd {
+  margin: 0.25rem 0 0;
+  color: #666666;
+  font-size: 17px;
+  line-height: 1.5rem;
+}
+
+.dark-mode .project-body dd {
+  color: #ffffff;
+}
+
+.artifact-list {
+  margin: 1rem 0 0;
+  padding: 1rem;
+  list-style: none;
+  border-radius: 10px;
+  border: 1px solid rgba(211, 211, 211, 0.397);
+  text-align: left;
+  line-height: normal;
+}
+
+.artifact-list li {
+  margin-bottom: 0.5rem;
+}
+
+.artifact-list code {
+  color: #55198b;
+  font-size: 0.85rem;
+  margin-right: 0.5rem;
+}
+
+.dark-mode .artifact-list code {
+  color: #aaa5ff;
+}
+
+.artifact-list span {
+  color: #666666;
+  font-size: 0.85rem;
+}
+
+.dark-mode .artifact-list span {
+  color: #ffffff;
+}
+
+/* Contact extras — availability, copy button and the mail form. */
+.contact-extras {
+  margin-top: 3rem;
+}
+
+.copy-btn {
+  background: transparent;
+  color: #55198b;
+  border: 1px solid #55198b;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  height: 2em;
+  padding: 0 0.75em;
+  margin-left: 0.75rem;
+  cursor: pointer;
+  vertical-align: middle;
+  transition: 0.2s ease-in;
+}
+
+.copy-btn:hover {
+  background: #55198b;
+  color: #f5f2f4;
+}
+
+.dark-mode .copy-btn {
+  color: #ffffff;
+  border-color: #ffffff;
+}
+
+.contact-form {
+  max-width: 640px;
+  margin-top: 1.5rem;
+  background-color: rgb(255, 255, 255);
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 10px 30px -15px;
+  padding: 1.5rem;
+  border-radius: 10px;
+  border: 1px solid rgba(211, 211, 211, 0.397);
+  line-height: normal;
+}
+
+.dark-mode .contact-form {
+  background-color: #171c28;
+}
+
+.form-note {
+  color: #868e96;
+  font-size: 0.9rem;
+  margin: 0 0 1rem;
+}
+
+.contact-form-field {
+  margin-bottom: 1rem;
+}
+
+.contact-form-field label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.contact-form-field input,
+.contact-form-field textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border: 1px solid rgba(211, 211, 211, 0.397);
+  border-radius: 6px;
+  background-color: #ffffff;
+  font: inherit;
+  font-size: 1rem;
+  transition: 0.2s ease-in;
+}
+
+.contact-form-field input:focus,
+.contact-form-field textarea:focus {
+  outline: none;
+  border-color: #55198b;
+}
+
+.contact-form-field textarea {
+  resize: vertical;
+}
+
+.contact-form-field.has-error input,
+.contact-form-field.has-error textarea {
+  border-color: #dc2626;
+}
+
+.field-error {
+  margin: 0.35rem 0 0;
+  color: #dc2626;
+  font-size: 0.84rem;
+  min-height: 1em;
+}
+
+.form-status {
+  margin-top: 0.75rem;
+  font-size: 0.92rem;
+  color: #55198b;
+  font-weight: 700;
+}
+
+.dark-mode .form-status {
+  color: #aaa5ff;
+}
+
+.contact-form .main-button {
+  margin-right: 0;
+}
+
+/* Carried by every static illustration fallback. */
+.art {
+  width: 100%;
+  height: auto;
+}
+
+/* Deliberately NO sizing rule for the Lottie stage: lottie-web writes
+   width/height:100% on its own svg and keeps the comp's width/height
+   attributes, so the box comes out as the column width times the comp's aspect
+   ratio. An aspect-ratio here would override that. */
+
+/* Résumé dialog. z-index 150 clears the scroll-to-top button (99) and the
+   header (1) and stays under the skip link (200), which must remain reachable
+   on focus. `[hidden]` is spelled out because the class sets `display: flex`
+   and the attribute selector is the more specific of the two. */
+.resume-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 150;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: resume-dialog-in 200ms ease;
+}
+
+.resume-dialog[hidden] {
+  display: none;
+}
+
+.resume-dialog-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(8, 0, 57, 0.55); /* the scene's own ink, not plain black */
+}
+
+/* The only sizing in here. The stage inside carries none, so lottie-web still
+   derives the height from the comp's aspect exactly as it does in-page. */
+.resume-dialog-panel {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  padding: 16px;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.3);
+}
+
+.resume-dialog-close {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: none;
+  border-radius: 6px; /* the 6px the buttons on this site use */
+  background: transparent;
+  color: #080039;
+  font-family: inherit;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* Drawn rather than typed, so the glyph is not a translatable string sitting
+   in the markup. The button's accessible name comes from its aria-label. */
+.resume-dialog-close::before {
+  content: '\00d7';
+}
+
+.resume-dialog-close:hover,
+.resume-dialog-close:focus {
+  background: rgba(8, 0, 57, 0.08);
+}
+
+.dark-mode .resume-dialog-panel {
+  background: #171c28;
+}
+
+.dark-mode .resume-dialog-close {
+  color: #ffffff;
+}
+
+.dark-mode .resume-dialog-close:hover,
+.dark-mode .resume-dialog-close:focus {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+@keyframes resume-dialog-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ------------------------------------------------------- 20. reveal / motion
+   Fade-on-scroll, fired by script.js at 20% visibility. Two distances (40px on
+   the greeting, 20px elsewhere) plus left/right variants, which default to
+   100% of the element's own width.
+
+   NO prefers-reduced-motion BLOCK, deliberately. An earlier revision honoured
+   it with a blanket kill switch and the result read as "the animations are
+   broken". Do not add one. */
+.reveal {
+  opacity: 0;
+}
+
+.reveal.is-visible {
+  animation-fill-mode: both;
+  animation-duration: 1000ms;
+}
+
+.reveal-bottom.is-visible {
+  animation-name: revealFadeUp20;
+}
+
+.reveal-bottom-40.is-visible {
+  animation-name: revealFadeUp40;
+}
+
+.reveal-bottom-5.is-visible {
+  animation-name: revealFadeUp5;
+}
+
+.reveal-left.is-visible {
+  animation-name: revealFadeLeft;
+}
+
+.reveal-right.is-visible {
+  animation-name: revealFadeRight;
+}
+
+.reveal-slide-left.is-visible {
+  animation-name: revealSlideLeft;
+  animation-duration: 2000ms;
+  opacity: 1;
+}
+
+@keyframes revealFadeUp20 {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 20px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes revealFadeUp5 {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 5px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes revealFadeUp40 {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 40px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes revealFadeLeft {
+  from {
+    opacity: 0;
+    transform: translate3d(-100%, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes revealFadeRight {
+  from {
+    opacity: 0;
+    transform: translate3d(100%, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes revealSlideLeft {
+  from {
+    transform: translate3d(-100%, 0, 0);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@media print {
+  .header,
+  #topButton,
+  .contact-form,
+  .greeting-image-div,
+  .skills-image-div,
+  .skills-image {
+    display: none;
+  }
+
+  .reveal {
+    opacity: 1;
+  }
+}
